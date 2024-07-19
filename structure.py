@@ -7,8 +7,8 @@ class element:
         self.end = end
 
     def __str__(self) -> str:
-        a = str(self.start)
-        b = str(self.end)
+        a = [self.start.X, self.start.Y, self.start.Z]
+        b = [self.end.X, self.end.Y, self.end.Z]
         return str([a,b])
 
 
@@ -46,15 +46,24 @@ class structure:
 
     def __str__(self) -> str:
         text1 = "structure.elements is: \n"
-        text2 = self.elements.__str__()
+        text2 = '['
+        for e in self.elements:
+            text2=text2+str(e)+', \n'
+        text2 = text2[0:-3] + ']'
         text3 = "\n \n"
 
         text4 = "structure.nodes is: \n"
-        text5 = self.nodes.__str__()
+        text5 = '['
+        for n in self.nodes:
+            text5 = text5+str(n)+', \n'
+        text5 = text5[0:-3] + ']'
         text6 = "\n \n"
 
         text7 = "structure.elementEndNodes is: \n"
-        text8 = self.elementEndNodes.__str__()
+        text8 = '['
+        for i in self.elementEndNodes:
+            text8=text8 + str(i) + ', \n'
+        text8 = text8[0:-3] + ']'
         text9 = "\n \n"
 
         return text1 + text2 + text3 + text4 + text5 + text6 + text7 + text8 + text9

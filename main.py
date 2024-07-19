@@ -33,7 +33,7 @@ def main():
     elements = inp.inputElements(filename)
     structure = sss.structure(elements)
 
-    print(structure.nodes[0])
+    print(structure)
 
     
 

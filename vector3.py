@@ -39,3 +39,8 @@ class vector3:
     
     def __str__(self):
         return str([self.X, self.Y, self.Z])
+    
+    def __repr__(self):
+        return str([self.X, self.Y, self.Z])
+    
+

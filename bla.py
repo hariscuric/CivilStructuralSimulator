@@ -9,4 +9,5 @@ e = sss.element(a,b)
 
 s = sss.structure([e])
 
-print(e)
+print(s)
+
