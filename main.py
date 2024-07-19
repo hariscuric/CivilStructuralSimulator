@@ -1,4 +1,6 @@
 import graphics as gr
+import inputElements as inp
+import structure as sss
 
 
 def main():
@@ -22,6 +24,17 @@ def main():
     #Input the loads
 
     #Compute the responses
+
+
+
+    print("input file name: ")
+    filename = input()
+
+    elements = inp.inputElements(filename)
+    structure = sss.structure(elements)
+
+    print(structure.nodes[0])
+
     
 
 main()
