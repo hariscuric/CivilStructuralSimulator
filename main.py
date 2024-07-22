@@ -36,14 +36,18 @@ def main():
 
     elements = inp.inputElements('input.txt')
     structure = sss.structure(elements)
-    camera = pP.camera(v.vector3(10,10,3),v.vector3(-1,-1,0).normalize())
+    camera = pP.camera(v.vector3(20,-5,5),v.vector3(-1,0,0).normalize())
+
     perspective = pP.perspective(structure,camera)
     animator = animate.animator(perspective)
-    animator.animate()
+    for i in range(500):
+        animator.perspective.camera.position.Y=animator.perspective.camera.position.Y+0.02
+        animator.perspective.computeView()
+        animator.animate()
+
+    
 
 
-
-    print(structure)
 
     
 

@@ -18,7 +18,8 @@ class perspective:
     def __init__(self, structure:sss.structure, camera=camera()) -> None:
         self.structure=structure
         self.camera=camera
-        self.view = self.computeView()
+        self.view=[]
+        self.computeView()
 
     def computeView(self):
         T = computeTransformationMatrix(self.camera)
@@ -45,7 +46,7 @@ class perspective:
             NstartProject = NstartProject/m.tan(self.camera.viewAngle*m.pi/180)
             NendProject = NendProject/m.tan(self.camera.viewAngle*m.pi/180)
             elements.append([NstartProject, NendProject])
-        return elements
+        self.view = elements
 
 
     
@@ -61,18 +62,21 @@ def computeTransformationMatrix(camera:camera):
     T11 = camera.direction.X
     T12 = camera.direction.Y
     T13 = camera.direction.Z
-    if T12 == 0:
-        T21 = 0
-        T22 = 1
-        T31 = -T13
-        T32 = 0
-        T33 = T11
-    else:
-        T21 = m.sqrt(1/(1+(T11/T12)**2))
-        T22 = m.sqrt(((T11/T12)**2)/(1+(T11/T12)**2))
-        T31 = -T13*m.sqrt(((T11/T12)**2)/(1+(T11/T12)**2))
-        T32 = -T13*m.sqrt(1/(1+(T11/T12)**2))
-        T33 = T11*m.sqrt(((T11/T12)**2)/(1+(T11/T12)**2)) - T12*m.sqrt(1/(1+(T11/T12)**2))
+
+    A = m.sqrt(T11**2 + T12**2 + T13**2)
+
+    T11 = T11/A
+    T12 = T12/A
+    T13 = T13/A
+    
+    T21 = -T12
+    T22 = T11
+    A = m.sqrt(T21**2 + T22**2)
+    T21 = T21/A
+    T22 = T22/A
     T23 = 0
+    T31 = T12*T23 - T13*T22
+    T32 = T13*T21 - T11*T23
+    T33 = T11*T22 - T12*T21
     T = np.array([[T11, T12, T13], [T21, T22, T23], [T31, T32, T33]])
     return T
