@@ -2,17 +2,22 @@ import vector3 as v
 import structure as sss
 import numpy as np
 
-a = np.array([[1],[2],[3]])
+import graphics as gr
 
-d = np.array([[1],[2],[2]])
+windowWidth = 1600
+windowHeight = 900
+window = gr.GraphWin("Structure", windowWidth, windowHeight)
+window.setBackground("black")
+window.setCoords(-1,-1,1,1)
 
-b = np.array([[1,3,4],[2,6,7],[3,3,8]])
+pt1 = gr.Point(0, 0)
+pt2 = gr.Point(-0.95, 0.5)
+Line1 = gr.Line(pt1, pt2)
+Line1.setOutline("white")
+Line1.draw(window)
 
-c = np.matmul(b,a-d)
 
-g = np.zeros([3,1])
-
-print(g)
+key = window.getKey()
 
 
 

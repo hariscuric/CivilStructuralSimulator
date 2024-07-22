@@ -28,6 +28,14 @@ class vector3:
         absoluteValue = m.sqrt(self.X**2 + self.Y**2 + self.Z**2)
         return absoluteValue
     
+
+    def normalize(self):
+        A = self.abs()
+        self.X = self.X/A
+        self.Y = self.Y/A
+        self.Z = self.Z/A
+        return self
+    
     def __radd__(self, other):
         if other == 0:
             return self

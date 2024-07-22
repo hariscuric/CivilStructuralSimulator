@@ -1,6 +1,10 @@
 import graphics as gr
 import inputElements as inp
 import structure as sss
+import perspectiveProjection as pP
+import vector3 as v
+import animate
+import math as m
 
 
 def main():
@@ -27,11 +31,17 @@ def main():
 
 
 
-    print("input file name: ")
-    filename = input()
+    #print("input file name: ")
+    #filename = input()
 
-    elements = inp.inputElements(filename)
+    elements = inp.inputElements('input.txt')
     structure = sss.structure(elements)
+    camera = pP.camera(v.vector3(10,10,3),v.vector3(-1,-1,0).normalize())
+    perspective = pP.perspective(structure,camera)
+    animator = animate.animator(perspective)
+    animator.animate()
+
+
 
     print(structure)
 
