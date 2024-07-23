@@ -19,6 +19,13 @@ Line1.draw(window)
 
 key = window.getKey()
 
+def bla(window):
+    key = window.getKey()
+    print(key)
+    bla(window)
+
+bla(window)
+
 
 
 
