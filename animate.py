@@ -145,6 +145,78 @@ class animator:
             self.perspective.computeView()
 
 
+        if key == 'f':
+            camPos = self.perspective.camera.position
+            camDir = self.perspective.camera.direction
+            orbitDist = self.perspective.cameraStructureDistance()
+            orbitPt = camPos + (camDir*orbitDist)
+            relVec = camPos - orbitPt
+            angle = m.atan2(relVec.Y,relVec.X)
+            A = m.sqrt(relVec.X**2 + relVec.Y**2)
+            angle = angle - 2*m.pi/180
+            relVec.X = A * m.cos(angle)
+            relVec.Y = A * m.sin(angle)
+            self.perspective.camera.position = orbitPt + relVec
+            self.perspective.camera.direction = relVec.normalize() * (-1)
+            self.perspective.computeView()
+
+        if key == 'h':
+            camPos = self.perspective.camera.position
+            camDir = self.perspective.camera.direction
+            orbitDist = self.perspective.cameraStructureDistance()
+            orbitPt = camPos + (camDir*orbitDist)
+            relVec = camPos - orbitPt
+            angle = m.atan2(relVec.Y,relVec.X)
+            A = m.sqrt(relVec.X**2 + relVec.Y**2)
+            angle = angle + 2*m.pi/180
+            relVec.X = A * m.cos(angle)
+            relVec.Y = A * m.sin(angle)
+            self.perspective.camera.position = orbitPt + relVec
+            self.perspective.camera.direction = relVec.normalize() * (-1)
+            self.perspective.computeView()
+
+
+
+        if key == 't':
+            camPos = self.perspective.camera.position
+            camDir = self.perspective.camera.direction
+            orbitDist = self.perspective.cameraStructureDistance()
+            orbitPt = camPos + (camDir*orbitDist)
+            relVec = camPos - orbitPt
+            angle = m.asin(relVec.Z/orbitDist)
+            A = m.sqrt(relVec.X**2 + relVec.Y**2)
+            angle = angle + 2*m.pi/180
+            if angle >= m.pi/2:
+                return True
+            relVec.Z = orbitDist * m.sin(angle)
+            newA = orbitDist * m.cos(angle)
+            relVec.X = relVec.X * newA/A
+            relVec.Y = relVec.Y * newA/A
+            self.perspective.camera.position = orbitPt + relVec
+            self.perspective.camera.direction = relVec.normalize() * (-1)
+            self.perspective.computeView()
+
+
+        if key == 'g':
+            camPos = self.perspective.camera.position
+            camDir = self.perspective.camera.direction
+            orbitDist = self.perspective.cameraStructureDistance()
+            orbitPt = camPos + (camDir*orbitDist)
+            relVec = camPos - orbitPt
+            angle = m.asin(relVec.Z/orbitDist)
+            A = m.sqrt(relVec.X**2 + relVec.Y**2)
+            angle = angle - 2*m.pi/180
+            if angle <= -m.pi/2:
+                return True
+            relVec.Z = orbitDist * m.sin(angle)
+            newA = orbitDist * m.cos(angle)
+            relVec.X = relVec.X * newA/A
+            relVec.Y = relVec.Y * newA/A
+            self.perspective.camera.position = orbitPt + relVec
+            self.perspective.camera.direction = relVec.normalize() * (-1)
+            self.perspective.computeView()
+
+
         if key == 'Escape':
             return False
         

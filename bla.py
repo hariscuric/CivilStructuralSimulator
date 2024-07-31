@@ -4,8 +4,8 @@ import numpy as np
 
 import graphics as gr
 
-windowWidth = 1600
-windowHeight = 900
+windowWidth = 900
+windowHeight = 600
 window = gr.GraphWin("Structure", windowWidth, windowHeight)
 window.setBackground("black")
 window.setCoords(-1,-1,1,1)
@@ -17,14 +17,19 @@ Line1.setOutline("white")
 Line1.draw(window)
 
 
-key = window.getKey()
 
 def bla(window):
     key = window.getKey()
     print(key)
     bla(window)
 
-bla(window)
+
+def blabla(window):
+    key = window.getMouse()
+    print(key)
+    blabla(window)
+
+blabla(window)
 
 
 

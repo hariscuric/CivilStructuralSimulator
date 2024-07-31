@@ -47,7 +47,18 @@ class perspective:
             NendProject = NendProject/m.tan(self.camera.viewAngle*m.pi/180)
             elements.append([NstartProject, NendProject])
         self.view = elements
-        
+
+    def cameraStructureDistance(self):
+        numofnodes = len(self.structure.nodes)
+        sum = v.vector3(0,0,0)
+        for node in self.structure.nodes:
+            sum = sum + node
+        avg = sum * (1/numofnodes)
+        distVec = self.camera.position - avg
+        dist = distVec.abs()
+        return dist
+
+
 
 
     
