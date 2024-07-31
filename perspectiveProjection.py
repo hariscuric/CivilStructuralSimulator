@@ -33,12 +33,12 @@ class perspective:
             if float(Nstart[0])<1 and float(Nend[0])<1:
                 continue
             if float(Nstart[0])<1:
-                Y = float((1-Nend[0])*(Nstart[1]-Nend[1])/(Nstart[0]-Nend[0]))
-                Z = float((1-Nend[0])*(Nstart[2]-Nend[2])/(Nstart[0]-Nend[0]))
+                Y = float(((1-Nend[0])*(Nstart[1]-Nend[1])/(Nstart[0]-Nend[0]))+Nend[1])
+                Z = float(((1-Nend[0])*(Nstart[2]-Nend[2])/(Nstart[0]-Nend[0]))+Nend[2])
                 Nstart = np.array([[1],[Y],[Z]])
             if float(Nend[0])<1:
-                Y = float((1-Nstart[0])*(Nend[1]-Nstart[1])/(Nend[0]-Nstart[0]))
-                Z = float((1-Nstart[0])*(Nend[2]-Nstart[2])/(Nend[0]-Nstart[0]))
+                Y = float(((1-Nstart[0])*(Nend[1]-Nstart[1])/(Nend[0]-Nstart[0]))+Nstart[1])
+                Z = float(((1-Nstart[0])*(Nend[2]-Nstart[2])/(Nend[0]-Nstart[0]))+Nstart[2])
                 Nend = np.array([[1],[Y],[Z]])
             
             NstartProject = np.array([-Nstart[1]/Nstart[0],Nstart[2]/Nstart[0]])
@@ -47,6 +47,7 @@ class perspective:
             NendProject = NendProject/m.tan(self.camera.viewAngle*m.pi/180)
             elements.append([NstartProject, NendProject])
         self.view = elements
+        
 
 
     
