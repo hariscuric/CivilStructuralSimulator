@@ -42,7 +42,6 @@ def main():
     animator = animate.animator(perspective)
     
     animator.animate()
-    animator.keyPress()
 
     
 

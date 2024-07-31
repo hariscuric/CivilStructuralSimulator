@@ -51,6 +51,12 @@ class vector3:
     def __repr__(self):
         return str([self.X, self.Y, self.Z])
     
+    def crossProduct(self,other):
+        XX = self.Y * other.Z - self.Z * other.Y
+        YY = self.Z * other.X - self.X * other.Z
+        ZZ = self.X * other.Y - self.Y * other.X
+        return vector3(XX,YY,ZZ)
+    
 
 
 

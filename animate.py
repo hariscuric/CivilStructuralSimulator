@@ -16,7 +16,17 @@ class animator:
         self.window.setCoords(-1,-1,1,1)
         self.lines = []
 
+
     def animate(self):
+        
+        l = True
+        while l:
+            self.draw()
+            l = self.keyPress()
+            self.undraw()
+
+
+    def draw(self):
         
         for e in self.perspective.view:
             Pt1x = float(e[0][0])
@@ -43,16 +53,10 @@ class animator:
         if key == 'Up':
             self.perspective.camera.position = self.perspective.camera.position + (self.perspective.camera.direction * 0.1)
             self.perspective.computeView()
-            self.undraw()
-            self.animate()
-            self.keyPress()
 
         if key == 'Down':
             self.perspective.camera.position = self.perspective.camera.position - (self.perspective.camera.direction * 0.1)
             self.perspective.computeView()
-            self.undraw()
-            self.animate()
-            self.keyPress()
 
 
         if key == 'Right':
@@ -61,9 +65,6 @@ class animator:
 
             self.perspective.camera.position = self.perspective.camera.position - (leftDir * 0.1)
             self.perspective.computeView()
-            self.undraw()
-            self.animate()
-            self.keyPress()
 
 
         if key == 'Left':
@@ -72,9 +73,28 @@ class animator:
 
             self.perspective.camera.position = self.perspective.camera.position + (leftDir * 0.1)
             self.perspective.computeView()
-            self.undraw()
-            self.animate()
-            self.keyPress()
+
+        if key == '8':
+            leftDir = v.vector3(-self.perspective.camera.direction.Y, self.perspective.camera.direction.X,0)
+            leftDir.normalize()
+
+            updir = self.perspective.camera.direction.crossProduct(leftDir)
+            updir.normalize()
+
+            self.perspective.camera.position = self.perspective.camera.position + (updir * 0.1)
+            self.perspective.computeView()
+
+
+        if key == '2':
+            leftDir = v.vector3(-self.perspective.camera.direction.Y, self.perspective.camera.direction.X,0)
+            leftDir.normalize()
+
+            updir = self.perspective.camera.direction.crossProduct(leftDir)
+            updir.normalize()
+
+            self.perspective.camera.position = self.perspective.camera.position - (updir * 0.1)
+            self.perspective.computeView()
+
 
 
 
@@ -87,9 +107,6 @@ class animator:
             self.perspective.camera.direction.Y = A * m.sin(angle)
             self.perspective.camera.direction.normalize()
             self.perspective.computeView()
-            self.undraw()
-            self.animate()
-            self.keyPress()
 
 
         if key == 'd':
@@ -101,9 +118,37 @@ class animator:
             self.perspective.camera.direction.Y = A * m.sin(angle)
             self.perspective.camera.direction.normalize()
             self.perspective.computeView()
-            self.undraw()
-            self.animate()
-            self.keyPress()
+
+
+        if key == 'w':
+            camDir = self.perspective.camera.direction
+            leftDir = v.vector3(-self.perspective.camera.direction.Y, self.perspective.camera.direction.X,0)
+            leftDir.normalize()
+
+            updir = self.perspective.camera.direction.crossProduct(leftDir)
+            updir.normalize()
+            newdir = camDir + (updir*0.035)
+            newdir.normalize()
+            self.perspective.camera.direction = newdir
+            self.perspective.computeView()
+
+        if key == 's':
+            camDir = self.perspective.camera.direction
+            leftDir = v.vector3(-self.perspective.camera.direction.Y, self.perspective.camera.direction.X,0)
+            leftDir.normalize()
+
+            updir = self.perspective.camera.direction.crossProduct(leftDir)
+            updir.normalize()
+            newdir = camDir - (updir*0.035)
+            newdir.normalize()
+            self.perspective.camera.direction = newdir
+            self.perspective.computeView()
+
+
+        if key == 'Escape':
+            return False
+        
+        return True
 
         
 
