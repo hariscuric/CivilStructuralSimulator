@@ -16,18 +16,30 @@ class element:
 
 
     def computeDefaultLocalXYZ(self):
+        matrix = np.zeros((3,3),dtype=float)
         localX = self.end - self.start
         localX.normalize()
         if localX == v.vector3(0,0,1):
             localZ = v.vector3(-1,0,0)
             localY = v.vector3(0,1,0)
-            return [localX,localY,localZ]
-        
-        localY = v.vector3(-localX.Y,localX.X,0)
-        localY.normalize()
-        localZ = localX.crossProduct(localY)
-        localZ.normalize()
-        return [localX,localY,localZ]
+        elif localX == v.vector3(0,0,-1):
+            localZ = v.vector3(1,0,0)
+            localY = v.vector3(0,1,0)
+        else:
+            localY = v.vector3(-localX.Y,localX.X,0)
+            localY.normalize()
+            localZ = localX.crossProduct(localY)
+            localZ.normalize()
+        matrix[0,0] = localX.X
+        matrix[0,1] = localX.Y
+        matrix[0,2] = localX.Z
+        matrix[1,0] = localY.X
+        matrix[1,1] = localY.Y
+        matrix[1,2] = localY.Z
+        matrix[2,0] = localZ.X
+        matrix[2,1] = localZ.Y
+        matrix[2,2] = localZ.Z
+        return matrix
     
 
     def updateStiffness(self):
@@ -92,7 +104,13 @@ class element:
         return K
     
     def transformLocal2Global(self):
-        return 0
+        T = np.zeros((12,12),dtype=float)
+        T[:3,:3] = self.localXYZ
+        T[3:6,3:6] = self.localXYZ
+        T[6:9,6:9] = self.localXYZ
+        T[9:,9:] = self.localXYZ
+        K = np.matmul(np.matmul(T.transpose(),self.localStiffnessMatrix),T)
+        return K
 
 
 
@@ -112,6 +130,7 @@ class structure:
         self.nodes=[]
         self.elementEndNodes=[]
         self.computeNodes()
+        self.stiffnessMatrix = self.computeStiffnessMatrix()
 
 
     def computeNodes(self):
@@ -135,6 +154,21 @@ class structure:
                 nodeIDs.append(len(self.nodes)-1)
             alreadyAdded = False
             self.elementEndNodes.append(nodeIDs)
+
+    def computeStiffnessMatrix(self):
+        numOfNodes = len(self.nodes)
+        DoF = 6*numOfNodes
+        K = np.zeros((DoF,DoF),dtype=float)
+        for i, element in enumerate(self.elements):
+            Kcon = np.zeros((DoF,DoF),dtype=float)
+            startID = self.elementEndNodes[i][0]
+            endID = self.elementEndNodes[i][1]
+            Kcon[startID*6:startID*6+6,startID*6:startID*6+6] = element.globalStiffnessMatrix[:6,:6]
+            Kcon[endID*6:endID*6+6,endID*6:endID*6+6] = element.globalStiffnessMatrix[6:,6:]
+            Kcon[startID*6:startID*6+6,endID*6:endID*6+6] = element.globalStiffnessMatrix[:6,6:]
+            Kcon[endID*6:endID*6+6,startID*6:startID*6+6] = element.globalStiffnessMatrix[6:,:6]
+            K = K + Kcon
+        return K
 
     def __str__(self) -> str:
         text1 = "structure.elements is: \n"
