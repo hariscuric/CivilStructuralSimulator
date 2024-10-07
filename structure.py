@@ -1,10 +1,102 @@
 import vector3 as v
+import numpy as np
 
 
 class element:
     def __init__(self,start:v.vector3,end:v.vector3) -> None:
         self.start = start
         self.end = end
+        self.localXYZ = self.computeDefaultLocalXYZ()
+        self.sectionHeight = 0.4
+        self.sectionWidth = 0.3
+        self.materialE = 30000000000.0
+        self.materialG = 12500000000.0
+        self.localStiffnessMatrix = self.updateStiffness()
+        self.globalStiffnessMatrix = self.transformLocal2Global()
+
+
+    def computeDefaultLocalXYZ(self):
+        localX = self.end - self.start
+        localX.normalize()
+        if localX == v.vector3(0,0,1):
+            localZ = v.vector3(-1,0,0)
+            localY = v.vector3(0,1,0)
+            return [localX,localY,localZ]
+        
+        localY = v.vector3(-localX.Y,localX.X,0)
+        localY.normalize()
+        localZ = localX.crossProduct(localY)
+        localZ.normalize()
+        return [localX,localY,localZ]
+    
+
+    def updateStiffness(self):
+        L = (self.end - self.start).abs()
+        h = self.sectionHeight
+        b = self.sectionWidth
+        Iy = h**3*b/12
+        Iz = b**3*h/12
+        Ix = Iy + Iz
+        A = h*b
+        E = self.materialE
+        G = self.materialG
+        K = np.zeros((12,12),dtype=float)
+        # Dof order:
+        # 0. X translation of start node (Axial compresion)
+        # 1. Y translation of start node (transverse deflection)
+        # 2. Z translation of start node (transverse deflection)
+        # 3. Rotation around X of start node (torsion)
+        # 4. Rotation around Y of start node (moment)
+        # 5. Rodation around Z of start node (moment)
+        # 6. - 11. The same for end node
+        K[0,0] = A*E/L
+        K[1,1] = 12*E*Iz/(L**3)
+        K[2,2] = 12*E*Iy/(L**3)
+        K[3,3] = G*Ix/L
+        K[4,4] = 4*E*Iy/L
+        K[4,2] = -6*E*Iy/(L**2)
+        K[2,4] = K[4,2]
+        K[5,5] = 4*E*Iz/L
+        K[5,1] = 6*E*Iz/(L**2)
+        K[1,5] = K[5,1]
+        K[6,6] = A*E/L
+        K[6,1] = -A*E/L
+        K[1,6] = K[6,1]
+        K[7,7] = 12*E*Iz/(L**3)
+        K[7,5] = -6*E*Iz/(L**2)
+        K[5,7] = K[7,5]
+        K[7,1] = -12*E*Iz/(L**3)
+        K[1,7] = K[7,1]
+        K[8,8] = 12*E*Iy/(L**3)
+        K[8,4] = 6*E*Iy/(L**2)
+        K[4,8] = K[8,4]
+        K[8,2] = -12*E*Iy/(L**3)
+        K[2,8] = K[8,2]
+        K[9,9] = G*Ix/L
+        K[9,3] = -G*Ix/L
+        K[3,9] = K[9,3]
+        K[10,10] = 4*E*Iy/L
+        K[10,8] = 6*E*Iy/(L**2)
+        K[8,10] = K[10,8]
+        K[10,4] = 2*E*Iy/L
+        K[4,10] = K[10,4]
+        K[10,2] = -6*E*Iy/(L**2)
+        K[2,10] = K[10,2]
+        K[11,11] = 4*E*Iz/L
+        K[11,7] = -6*E*Iz/(L**2)
+        K[7,11] = K[11,7]
+        K[11,5] = 2*E*Iz/L
+        K[5,11] = K[11,5]
+        K[11,1] = 6*E*Iz/(L**2)
+        K[1,11] = K[11,1]
+        return K
+    
+    def transformLocal2Global(self):
+        return 0
+
+
+
+
 
     def __str__(self) -> str:
         a = [self.start.X, self.start.Y, self.start.Z]
