@@ -13,6 +13,11 @@ class element:
         self.materialG = 12500000000.0
         self.localStiffnessMatrix = self.updateStiffness()
         self.globalStiffnessMatrix = self.transformLocal2Global()
+        self.localDisplacements = np.zeros((12,),dtype=float)
+        self.globalDisplacements = np.zeros((12,),dtype=float)
+        self.localDistForces = np.zeros((6,),dtype=float)
+        self.globalDistForces = np.zeros((6,),dtype=float)
+
 
 
     def computeDefaultLocalXYZ(self):
@@ -111,6 +116,20 @@ class element:
         T[9:,9:] = self.localXYZ
         K = np.matmul(np.matmul(T.transpose(),self.localStiffnessMatrix),T)
         return K
+    
+    def Global2LocalDisp(self):
+        T = np.zeros((12,12),dtype=float)
+        T[:3,:3] = self.localXYZ
+        T[3:6,3:6] = self.localXYZ
+        T[6:9,6:9] = self.localXYZ
+        T[9:,9:] = self.localXYZ
+        self.localDisplacements = np.matmul(T.transpose(),self.globalDisplacements)
+
+    def Global2LocalForces(self):
+        T = np.zeros((6,6),dtype=float)
+        T[:3,:3] = self.localXYZ
+        T[3:6,3:6] = self.localXYZ
+        self.localDistForces = np.matmul(T.transpose(),self.globalDistForces)
 
 
 

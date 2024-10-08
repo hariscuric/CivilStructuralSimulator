@@ -51,11 +51,11 @@ class animator:
     def keyPress(self):
         key = self.window.getKey()
         if key == 'Up':
-            self.perspective.camera.position = self.perspective.camera.position + (self.perspective.camera.direction * 0.1)
+            self.perspective.camera.position = self.perspective.camera.position + (self.perspective.camera.direction * 0.5)
             self.perspective.computeView()
 
         if key == 'Down':
-            self.perspective.camera.position = self.perspective.camera.position - (self.perspective.camera.direction * 0.1)
+            self.perspective.camera.position = self.perspective.camera.position - (self.perspective.camera.direction * 0.5)
             self.perspective.computeView()
 
 
@@ -63,7 +63,7 @@ class animator:
             leftDir = v.vector3(-self.perspective.camera.direction.Y, self.perspective.camera.direction.X,0)
             leftDir.normalize()
 
-            self.perspective.camera.position = self.perspective.camera.position - (leftDir * 0.1)
+            self.perspective.camera.position = self.perspective.camera.position - (leftDir * 0.5)
             self.perspective.computeView()
 
 
@@ -71,7 +71,7 @@ class animator:
             leftDir = v.vector3(-self.perspective.camera.direction.Y, self.perspective.camera.direction.X,0)
             leftDir.normalize()
 
-            self.perspective.camera.position = self.perspective.camera.position + (leftDir * 0.1)
+            self.perspective.camera.position = self.perspective.camera.position + (leftDir * 0.5)
             self.perspective.computeView()
 
         if key == '8':
@@ -81,7 +81,7 @@ class animator:
             updir = self.perspective.camera.direction.crossProduct(leftDir)
             updir.normalize()
 
-            self.perspective.camera.position = self.perspective.camera.position + (updir * 0.1)
+            self.perspective.camera.position = self.perspective.camera.position + (updir * 0.5)
             self.perspective.computeView()
 
 
@@ -92,7 +92,7 @@ class animator:
             updir = self.perspective.camera.direction.crossProduct(leftDir)
             updir.normalize()
 
-            self.perspective.camera.position = self.perspective.camera.position - (updir * 0.1)
+            self.perspective.camera.position = self.perspective.camera.position - (updir * 0.5)
             self.perspective.computeView()
 
 
@@ -214,6 +214,18 @@ class animator:
             relVec.Y = relVec.Y * newA/A
             self.perspective.camera.position = orbitPt + relVec
             self.perspective.camera.direction = relVec.normalize() * (-1)
+            self.perspective.computeView()
+
+        if key == 'e':
+            if self.perspective.camera.viewAngle>=70:
+                return True
+            self.perspective.camera.viewAngle = self.perspective.camera.viewAngle + 5
+            self.perspective.computeView()
+
+        if key == 'r':
+            if self.perspective.camera.viewAngle<=10:
+                return True
+            self.perspective.camera.viewAngle = self.perspective.camera.viewAngle - 5
             self.perspective.computeView()
 
 
