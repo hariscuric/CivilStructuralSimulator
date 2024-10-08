@@ -131,6 +131,9 @@ class structure:
         self.elementEndNodes=[]
         self.computeNodes()
         self.stiffnessMatrix = self.computeStiffnessMatrix()
+        self.supportDoFs = self.defaultSupports()
+        self.Kuu = self.computeStiffnessMatrixWithSupports()
+        self.Ksu = self.computeKsu()
 
 
     def computeNodes(self):
@@ -169,6 +172,31 @@ class structure:
             Kcon[endID*6:endID*6+6,startID*6:startID*6+6] = element.globalStiffnessMatrix[6:,:6]
             K = K + Kcon
         return K
+    
+    def defaultSupports(self):
+        numOfNodes = len(self.nodes)
+        DoF = 6*numOfNodes
+        DoFs = np.zeros((DoF,),dtype=bool)
+        minZ = min([x.Z for x in self.nodes])
+        for i, node in enumerate(self.nodes):
+            if node.Z == minZ:
+                DoFs[i*6:i*6+6]=True
+        return DoFs
+    
+    def computeStiffnessMatrixWithSupports(self):
+        ssBool = self.supportDoFs
+        uuBool = np.array([not x for x in ssBool],dtype=bool)
+        Kuu = self.stiffnessMatrix[uuBool]
+        Kuu = Kuu[:,uuBool]
+        return Kuu
+    
+    def computeKsu(self):
+        ssBool = self.supportDoFs
+        uuBool = np.array([not x for x in ssBool],dtype=bool)
+        Ksu = self.stiffnessMatrix[ssBool]
+        Ksu = Ksu[:,uuBool]
+        return Ksu
+        
 
     def __str__(self) -> str:
         text1 = "structure.elements is: \n"
