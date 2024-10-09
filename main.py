@@ -36,8 +36,6 @@ def main():
 
     elements = inp.inputElements('input.txt')
     structure = sss.structure(elements)
-    print(structure.nodalForces)
-    exit()
     camera = pP.camera(v.vector3(10,10,10),v.vector3(-1,-1,-1).normalize())
 
     perspective = pP.perspective(structure,camera)

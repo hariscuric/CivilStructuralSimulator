@@ -156,6 +156,9 @@ class structure:
         self.Ksu = self.computeKsu()
         self.nodalForces = self.importNodalForces()
         self.convertElement2NodalForces()
+        self.nodalForcesUU = self.updateUnsupportedNodalForces()
+        self.uuNodalDisplacements = self.solveForDisplacements()
+        self.NodalDisplacements = self.expandDisplacementVector()
 
 
     def computeNodes(self):
@@ -247,9 +250,25 @@ class structure:
             self.nodalForces[Node1ID*6:Node1ID*6+6] += Node1
             self.nodalForces[Node2ID*6:Node2ID*6+6] += Node2
 
+    def updateUnsupportedNodalForces(self):
+        ssBool = self.supportDoFs
+        uuBool = np.array([not x for x in ssBool],dtype=bool)
+        return self.nodalForces[uuBool]
+    
+    def solveForDisplacements(self):
+        return np.linalg.solve(self.Kuu,self.nodalForcesUU)
+    
+    def expandDisplacementVector(self):
+        D = np.zeros((len(self.supportDoFs),),dtype=float)
+        ssBool = self.supportDoFs
+        uuBool = np.array([not x for x in ssBool],dtype=bool)
+        D[uuBool] = self.uuNodalDisplacements
+        return D
+    
 
 
-        return 0
+
+
         
 
     def __str__(self) -> str:
