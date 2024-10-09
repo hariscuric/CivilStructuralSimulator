@@ -1,5 +1,6 @@
 import vector3 as v
 import numpy as np
+import csv
 
 
 class element:
@@ -153,6 +154,8 @@ class structure:
         self.supportDoFs = self.defaultSupports()
         self.Kuu = self.computeStiffnessMatrixWithSupports()
         self.Ksu = self.computeKsu()
+        self.nodalForces = self.importNodalForces()
+        self.convertElement2NodalForces()
 
 
     def computeNodes(self):
@@ -215,6 +218,38 @@ class structure:
         Ksu = self.stiffnessMatrix[ssBool]
         Ksu = Ksu[:,uuBool]
         return Ksu
+    
+    def importNodalForces(self):
+        numOfNodes = len(self.nodes)
+        DoF = 6*numOfNodes
+        forces = np.zeros((DoF,),dtype=float)
+        with open('inputNodeForces.txt') as file:
+            reader = csv.reader(file)
+            for i, row in enumerate(reader):
+                forces[i*6:i*6+6] = np.array([float(row[0]),float(row[1]),float(row[2]),float(row[3]),float(row[4]),float(row[5])],dtype=float)
+        return forces
+    
+    def convertElement2NodalForces(self):
+        for i, element in enumerate(self.elements):
+            elementForces = element.globalDistForces
+            elementLength = (element.end-element.start).abs()
+            Node1=elementForces*elementLength*0.5
+            Node2=elementForces*elementLength*0.5
+            elementForcesV = v.vector3(elementForces[0],elementForces[1],elementForces[2])
+            moment1 = ((element.end-element.start)*0.25).crossProduct(elementForcesV*elementLength*0.5)
+            moment2 = ((element.start-element.end)*0.25).crossProduct(elementForcesV*elementLength*0.5)
+            moment1 = np.array([moment1.X,moment1.Y,moment1.Z],dtype=float)
+            moment2 = np.array([moment2.X,moment2.Y,moment2.Z],dtype=float)
+            Node1[3:] += moment1
+            Node2[3:] += moment2
+            Node1ID = self.elementEndNodes[i][0]
+            Node2ID = self.elementEndNodes[i][1]
+            self.nodalForces[Node1ID*6:Node1ID*6+6] += Node1
+            self.nodalForces[Node2ID*6:Node2ID*6+6] += Node2
+
+
+
+        return 0
         
 
     def __str__(self) -> str:
