@@ -16,8 +16,11 @@ class element:
         self.globalStiffnessMatrix = self.transformLocal2Global()
         self.localDisplacements = np.zeros((12,),dtype=float)
         self.globalDisplacements = np.zeros((12,),dtype=float)
+        self.localForces = np.zeros((12,),dtype=float)
+        self.globalForces = np.zeros((12,),dtype=float)
         self.localDistForces = np.zeros((6,),dtype=float)
         self.globalDistForces = np.zeros((6,),dtype=float)
+        self.diagrams = np.zeros((6,11),dtype=float)
 
 
 
@@ -132,6 +135,21 @@ class element:
         T[3:6,3:6] = self.localXYZ
         self.localDistForces = np.matmul(T.transpose(),self.globalDistForces)
 
+    def computeLocalNodalForces(self):
+        self.localForces = np.matmul(self.localStiffnessMatrix, self.localDisplacements)
+
+    def computeDiagrams(self):
+        L = (self.end - self.start).abs()
+        for i in range(11):
+            x = L*i/10
+            self.diagrams[0,i] = -self.localForces[0]-self.localDistForces[0]*x
+            self.diagrams[1,i] = -self.localForces[1]-self.localDistForces[1]*x
+            self.diagrams[2,i] = -self.localForces[2]-self.localDistForces[2]*x
+            self.diagrams[3,i] = -self.localForces[3]-self.localDistForces[3]*x
+            self.diagrams[4,i] = -self.localForces[4]-self.localForces[2]*x-self.localDistForces[4]*x-self.localDistForces[2]*x*x*0.5
+            self.diagrams[5,i] = -self.localForces[5]+self.localForces[1]*x-self.localDistForces[5]*x+self.localDistForces[1]*x*x*0.5
+
+
 
 
 
@@ -159,6 +177,7 @@ class structure:
         self.nodalForcesUU = self.updateUnsupportedNodalForces()
         self.uuNodalDisplacements = self.solveForDisplacements()
         self.NodalDisplacements = self.expandDisplacementVector()
+        self.assignElementDisplacementsAndComputeDiagrams()
 
 
     def computeNodes(self):
@@ -264,6 +283,21 @@ class structure:
         uuBool = np.array([not x for x in ssBool],dtype=bool)
         D[uuBool] = self.uuNodalDisplacements
         return D
+    
+    def assignElementDisplacementsAndComputeDiagrams(self):
+        for i, element in enumerate(self.elements):
+            Node1ID = self.elementEndNodes[i][0]
+            Node2ID = self.elementEndNodes[i][1]
+            DispNode1 = self.NodalDisplacements[Node1ID*6:Node1ID*6+6]
+            DispNode2 = self.NodalDisplacements[Node2ID*6:Node2ID*6+6]
+            ElementDisp = np.zeros((12,),dtype=float)
+            ElementDisp[:6] = DispNode1
+            ElementDisp[6:] = DispNode2
+            self.elements[i].globalDisplacements = ElementDisp
+            self.elements[i].Global2LocalDisp()
+            self.elements[i].computeLocalNodalForces()
+            self.elements[i].computeDiagrams()
+
     
 
 

@@ -25,6 +25,7 @@ def inputElements(filename):
         for i, row in enumerate(reader):
             forces = np.array([float(row[0]),float(row[1]),float(row[2]),float(row[3]),float(row[4]),float(row[5])],dtype=float)
             elements[i].globalDistForces = forces
+            elements[i].Global2LocalForces()
 
     
     return elements
