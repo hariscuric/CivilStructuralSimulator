@@ -142,6 +142,39 @@ class element:
         L = (self.end - self.start).abs()
         for i in range(11):
             x = L*i/10
+            Fx1 = self.localForces[0]
+            Fy1 = self.localForces[1]
+            Fz1 = self.localForces[2]
+            Mx1 = self.localForces[3]
+            My1 = self.localForces[4]
+            Mz1 = self.localForces[5]
+            Fx2 = self.localForces[6]
+            Fy2 = self.localForces[7]
+            Fz2 = self.localForces[8]
+            Mx2 = self.localForces[9]
+            My2 = self.localForces[10]
+            Mz2 = self.localForces[11]
+            fx = self.localDistForces[0]
+            fy = self.localDistForces[1]
+            fz = self.localDistForces[2]
+            mx = self.localDistForces[3]
+            my = self.localDistForces[4]
+            mz = self.localDistForces[5]
+            #adjusting reactions for equilibrium:
+            a = Fx1+Fx2+fx*L
+            Fx1-=a/2
+            Fx2-=a/2
+            a = Fy1+Fy2+fy*L
+            Fy1-=a/2
+            Fy2-=a/2
+            a = Fz1+Fz2+fz*L
+            Fz1-=a/2
+            Fz2-=a/2
+            a = Mx1+Mx2+mx*L
+            Mx1-=a/2
+            Mx2-=a/2
+            a = My1 + My2 + Fz1*L/2 - Fz2*L/2
+            #stopped here
             self.diagrams[0,i] = -self.localForces[0]-self.localDistForces[0]*x
             self.diagrams[1,i] = -self.localForces[1]-self.localDistForces[1]*x
             self.diagrams[2,i] = -self.localForces[2]-self.localDistForces[2]*x
