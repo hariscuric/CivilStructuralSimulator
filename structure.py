@@ -174,13 +174,17 @@ class element:
             Mx1-=a/2
             Mx2-=a/2
             a = My1 + My2 + Fz1*L/2 - Fz2*L/2
-            #stopped here
-            self.diagrams[0,i] = -self.localForces[0]-self.localDistForces[0]*x
-            self.diagrams[1,i] = -self.localForces[1]-self.localDistForces[1]*x
-            self.diagrams[2,i] = -self.localForces[2]-self.localDistForces[2]*x
-            self.diagrams[3,i] = -self.localForces[3]-self.localDistForces[3]*x
-            self.diagrams[4,i] = -self.localForces[4]-self.localForces[2]*x-self.localDistForces[4]*x-self.localDistForces[2]*x*x*0.5
-            self.diagrams[5,i] = -self.localForces[5]+self.localForces[1]*x-self.localDistForces[5]*x+self.localDistForces[1]*x*x*0.5
+            Fz1-=a*2/L
+            Fz2+=a*2/L
+            a = Mz1 + Mz2 - Fy1*L/2 + Fy2*L/2
+            Fy1+=a*2/L
+            Fy2-=a*2/L
+            self.diagrams[0,i] = -Fx1-fx*x
+            self.diagrams[1,i] = -Fy1-fy*x
+            self.diagrams[2,i] = -Fz1-fz*x
+            self.diagrams[3,i] = -Mx1-mx*x
+            self.diagrams[4,i] = -My1-Fz1*x-my*x-fz*x*x*0.5
+            self.diagrams[5,i] = -Mz1+Fy1*x-mz*x+fy*x*x*0.5
 
 
 

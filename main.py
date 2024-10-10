@@ -36,7 +36,10 @@ def main():
 
     elements = inp.inputElements('input.txt')
     structure = sss.structure(elements)
+    print('Nodal forces:')
     print(structure.elements[1].localForces)
+    print('My diagram:')
+    print(structure.elements[1].diagrams[4,:])
     exit()
 
 
