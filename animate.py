@@ -15,6 +15,7 @@ class animator:
         self.window.setBackground("black")
         self.window.setCoords(-1,-1,1,1)
         self.lines = []
+        self.activeDiagram = None
 
 
     def animate(self):
@@ -22,6 +23,8 @@ class animator:
         l = True
         while l:
             self.draw()
+            if self.activeDiagram in [0,1,2,3,4,5]:
+                self.drawDiagram()
             l = self.keyPress()
             self.undraw()
 
@@ -47,6 +50,21 @@ class animator:
             self.lines[i].undraw()
 
         self.lines = []
+
+
+    def drawDiagram(self, diagramID):
+        for e in self.perspective.diagramView:
+            Pt1x = float(e[0][0])
+            Pt1y = float(e[0][1])
+            Pt2x = float(e[1][0])
+            Pt2y = float(e[1][1])
+
+            pt1 = gr.Point(Pt1x, Pt1y)
+            pt2 = gr.Point(Pt2x, Pt2y)
+            self.lines.append(gr.Line(pt1, pt2))
+            self.lines[-1].setOutline("red")
+            self.lines[-1].draw(self.window)
+
 
     def keyPress(self):
         key = self.window.getKey()
@@ -227,6 +245,30 @@ class animator:
                 return True
             self.perspective.camera.viewAngle = self.perspective.camera.viewAngle - 5
             self.perspective.computeView()
+
+        if key == 'm':
+            self.activeDiagram = 4
+
+        if key == 'n':
+            self.activeDiagram = 0
+
+        if key == 'v':
+            self.activeDiagram = 2
+
+        if key == 'b':
+            self.activeDiagram = 1
+
+        if key == 'c':
+            self.activeDiagram = 5
+
+        if key == 'x':
+            self.activeDiagram = 3
+
+        if key =='z':
+            self.activeDiagram = None
+
+        if self.activeDiagram in [0,1,2,3,4,5]:
+            self.perspective.computeDiagramView(self.activeDiagram)
 
 
         if key == 'Escape':

@@ -6,14 +6,7 @@ import numpy as np
 
 # print(((m.cos(beta)-m.sqrt(m.cos(beta)**2-m.cos(gama)**2))/(m.cos(beta)+m.sqrt(m.cos(beta)**2-m.cos(gama)**2)))*m.cos(beta))
 
-a = np.array([[1,2,3],[1,0,3],[5,5,5]],dtype=float)
-b = np.array([1,1,1],dtype=float)
-c = np.matmul(a.transpose(),b)
-
-
-
-
-
-d = a.transpose()
-print(d)
-print(a)
+a = np.array([1,2,3])
+b = np.array([[1],[2],[3]])
+c = a+b
+print(c[0,:])

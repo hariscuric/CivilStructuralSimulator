@@ -20,6 +20,7 @@ class perspective:
         self.camera=camera
         self.view=[]
         self.computeView()
+        self.diagramView=[]
 
     def computeView(self):
         T = computeTransformationMatrix(self.camera)
@@ -57,6 +58,52 @@ class perspective:
         distVec = self.camera.position - avg
         dist = distVec.abs()
         return dist
+    
+    def computeDiagramView(self,diagramID:int):
+        T = computeTransformationMatrix(self.camera)
+        camPosVec = np.array([self.camera.position.X,self.camera.position.Y,self.camera.position.Z])
+        elements = []
+        diagramMax = []
+        for e in self.structure.elements: 
+            diagramMax.append(max([x for x in e.diagrams[diagramID,:]]))
+        diagramMax = max(diagramMax)
+        scaling = 0.5/diagramMax
+        for e in self.structure.elements:
+            estart = np.array([e.start.X, e.start.Y, e.start.Z])
+            L = (e.end - e.start).abs()
+            LocalAxis = e.localXYZ
+            XdirVector = LocalAxis[0,:]
+            if diagramID in [0,2,3,4]:
+                dirVector = LocalAxis[2,:]
+            if diagramID in [1,5]:
+                dirVector = LocalAxis[1,:]
+            for i in range(11):
+                start = estart + XdirVector*i*L/10 + dirVector*e.diagrams[diagramID,i]
+                end = estart + XdirVector*(i+1)*L/10 + dirVector*e.diagrams[diagramID,i+1]
+                Nstart = np.matmul(T,start-camPosVec)
+                Nend = np.matmul(T,end-camPosVec)
+                if float(Nstart[0])<1 and float(Nend[0])<1:
+                    continue
+                if float(Nstart[0])<1:
+                    Y = float(((1-Nend[0])*(Nstart[1]-Nend[1])/(Nstart[0]-Nend[0]))+Nend[1])
+                    Z = float(((1-Nend[0])*(Nstart[2]-Nend[2])/(Nstart[0]-Nend[0]))+Nend[2])
+                    Nstart = np.array([[1],[Y],[Z]])
+                if float(Nend[0])<1:
+                    Y = float(((1-Nstart[0])*(Nend[1]-Nstart[1])/(Nend[0]-Nstart[0]))+Nstart[1])
+                    Z = float(((1-Nstart[0])*(Nend[2]-Nstart[2])/(Nend[0]-Nstart[0]))+Nstart[2])
+                    Nend = np.array([[1],[Y],[Z]])
+                
+                NstartProject = np.array([-Nstart[1]/Nstart[0],Nstart[2]/Nstart[0]])
+                NendProject = np.array([-Nend[1]/Nend[0],Nend[2]/Nend[0]])
+                NstartProject = NstartProject/m.tan(self.camera.viewAngle*m.pi/180)
+                NendProject = NendProject/m.tan(self.camera.viewAngle*m.pi/180)
+                elements.append([NstartProject, NendProject])
+        self.diagramView = elements
+
+
+            
+        
+
 
 
 

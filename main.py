@@ -36,10 +36,6 @@ def main():
 
     elements = inp.inputElements('input.txt')
     structure = sss.structure(elements)
-    print('Nodal forces:')
-    print(structure.elements[0].localForces)
-    print('Mz diagram:')
-    print(structure.elements[0].diagrams[4,:])
 
 
     camera = pP.camera(v.vector3(10,10,10),v.vector3(-1,-1,-1).normalize())
