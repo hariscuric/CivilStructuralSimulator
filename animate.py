@@ -24,7 +24,7 @@ class animator:
         while l:
             self.draw()
             if self.activeDiagram in [0,1,2,3,4,5]:
-                self.drawDiagram()
+                self.drawDiagram(self.activeDiagram)
             l = self.keyPress()
             self.undraw()
 

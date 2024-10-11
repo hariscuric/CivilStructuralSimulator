@@ -77,9 +77,9 @@ class perspective:
                 dirVector = LocalAxis[2,:]
             if diagramID in [1,5]:
                 dirVector = LocalAxis[1,:]
-            for i in range(11):
-                start = estart + XdirVector*i*L/10 + dirVector*e.diagrams[diagramID,i]
-                end = estart + XdirVector*(i+1)*L/10 + dirVector*e.diagrams[diagramID,i+1]
+            for i in range(10):
+                start = estart + XdirVector*i*L/10 + dirVector*e.diagrams[diagramID,i]*scaling
+                end = estart + XdirVector*(i+1)*L/10 + dirVector*e.diagrams[diagramID,i+1]*scaling
                 Nstart = np.matmul(T,start-camPosVec)
                 Nend = np.matmul(T,end-camPosVec)
                 if float(Nstart[0])<1 and float(Nend[0])<1:
