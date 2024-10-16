@@ -17,7 +17,7 @@ inputElementSectionMaterial.txt defines rectangular section height, width, Young
 
 inputNodeForces.txt file defines imposed nodal forces and moments in global coordinates. Number of rows of this file has to be the same as number of nodes of the system. This corresponds to number of distinct 3D point coordinates used to define elements in inputElementCoordinates.txt in the order as they first appear in that file. Each row in inputNodeForces.txt defines 3 forces (XYZ) and 3 moments (XYZ)
 
-inputSupports.txt defines the nodal restraints. Number of rows is the same as inputNodeForces.txt file's. Nodes that have restraints have number 1 for corresponding restrained coordinate. Free DoFs are zeros in this file.
+inputSupports.txt defines the nodal restraints. Number of rows is the same as inputNodeForces.txt file's. Nodes that have restraints have number 1 for corresponding restrained DoFs. Free DoFs are zeros in this file.
 
 Program can be run by terminal command:
 python main.py
@@ -67,7 +67,7 @@ Visualized diagrams currently don't display numerical values, only shapes of dia
 
 Order of diagrams is as follows: N, V minor, V major, T torsion, M major, M minor (Fx, Fy, Fz, Mx, My, Mz in element local coordinates)
 
-Nodal deformations of the system are stored in structure.NodalDisplacements numpy array. For example, to display 6 components of deformations (3 translations and 3 rotations) of 8'th element use the following command:
+Nodal deformations of the system are stored in structure.NodalDisplacements numpy array. For example, to display 6 components of deformations (3 translations and 3 rotations) of 8'th node use the following command:
 
     print(structure.NodalDisplacements[7*6:7*6+6])
 
