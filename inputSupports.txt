@@ -1,0 +1,13 @@
+Translation X, Translation Y, Translation Z, Rotation X, Rotation Y, Rotation Z (Nodal restraints (supports) - 1 if restrained, 0 if free)
+1,1,1,0,0,0
+0,0,0,0,0,0
+0,0,0,0,0,0
+1,1,1,0,0,0
+1,1,1,0,0,0
+0,0,0,0,0,0
+0,0,0,0,0,0
+1,1,1,0,0,0
+0,0,0,0,0,0
+0,0,0,0,0,0
+0,0,0,0,0,0
+0,0,0,0,0,0

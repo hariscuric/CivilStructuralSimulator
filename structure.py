@@ -22,6 +22,11 @@ class element:
         self.globalDistForces = np.zeros((6,),dtype=float)
         self.diagrams = np.zeros((6,11),dtype=float)
 
+    def update(self):
+        self.localStiffnessMatrix = self.updateStiffness()
+        self.globalStiffnessMatrix = self.transformLocal2Global()
+
+
 
 
     def computeDefaultLocalXYZ(self):
@@ -127,13 +132,13 @@ class element:
         T[3:6,3:6] = self.localXYZ
         T[6:9,6:9] = self.localXYZ
         T[9:,9:] = self.localXYZ
-        self.localDisplacements = np.matmul(T.transpose(),self.globalDisplacements)
+        self.localDisplacements = np.matmul(T,self.globalDisplacements)
 
     def Global2LocalForces(self):
         T = np.zeros((6,6),dtype=float)
         T[:3,:3] = self.localXYZ
         T[3:6,3:6] = self.localXYZ
-        self.localDistForces = np.matmul(T.transpose(),self.globalDistForces)
+        self.localDistForces = np.matmul(T,self.globalDistForces)
 
     def computeLocalNodalForces(self):
         self.localForces = np.matmul(self.localStiffnessMatrix, self.localDisplacements)
@@ -232,7 +237,7 @@ class structure:
         self.elementEndNodes=[]
         self.computeNodes()
         self.stiffnessMatrix = self.computeStiffnessMatrix()
-        self.supportDoFs = self.defaultSupports()
+        self.supportDoFs = self.assignSupports()
         self.Kuu = self.computeStiffnessMatrixWithSupports()
         self.Ksu = self.computeKsu()
         self.nodalForces = self.importNodalForces()
@@ -290,6 +295,18 @@ class structure:
                 DoFs[i*6:i*6+6]=True
         return DoFs
     
+    def assignSupports(self):
+        numOfNodes = len(self.nodes)
+        DoF = 6*numOfNodes
+        DoFs = np.zeros((DoF,),dtype=bool)
+        with open('inputSupports.txt') as file:
+            reader = csv.reader(file)
+            for i, row in enumerate(reader):
+                if i ==0:
+                    continue
+                DoFs[(i-1)*6:(i-1)*6+6] = np.array([float(row[0]),float(row[1]),float(row[2]),float(row[3]),float(row[4]),float(row[5])],dtype=bool)
+        return DoFs
+    
     def computeStiffnessMatrixWithSupports(self):
         ssBool = self.supportDoFs
         uuBool = np.array([not x for x in ssBool],dtype=bool)
@@ -311,7 +328,9 @@ class structure:
         with open('inputNodeForces.txt') as file:
             reader = csv.reader(file)
             for i, row in enumerate(reader):
-                forces[i*6:i*6+6] = np.array([float(row[0]),float(row[1]),float(row[2]),float(row[3]),float(row[4]),float(row[5])],dtype=float)
+                if i == 0:
+                    continue
+                forces[(i-1)*6:(i-1)*6+6] = np.array([float(row[0]),float(row[1]),float(row[2]),float(row[3]),float(row[4]),float(row[5])],dtype=float)
         return forces
     
     def convertElement2NodalForces(self):

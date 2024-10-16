@@ -34,7 +34,7 @@ def main():
     #print("input file name: ")
     #filename = input()
 
-    elements = inp.inputElements('input.txt')
+    elements = inp.inputElements()
     structure = sss.structure(elements)
 
 
