@@ -1,5 +1,10 @@
 # CivilStructuralSimulator
 
+Current example looks like this (Major moment diagram is displayed):
+
+
+![Simulation Snip 4](/StructureVisualization.gif)
+
 Program is meant to solve simple linear 3D frame structural systems. (Only 1D beam elements for now, maybe also 2D shell elements in the future)
 
 For now, frame system visualisation, linear analysis solution and diagrams' (NMV diagrams) visualizations have been implemented. System is defined in .txt files.
@@ -53,10 +58,7 @@ esc:
 
 
 
-Current example looks like this (Major moment diagram is displayed):
 
-
-![Simulation Snip 4](/StructureVisualization.gif)
 
 
 Visualized diagrams currently don't display numerical values, only shapes of diagrams. Numerical values of computed diagrams are stored in structure.elements[i].diagrams[0:6,0:11] numpy array variable. This array contains 6 diagram values for 11 stations along i'th element. For example, to obtain major moment diagram for 3'rd element (i index is 2 in this case since it starts from 0) insert following command after structure = sss.structure(elements) line in the main function (check commented lines in main.py file):
