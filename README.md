@@ -11,7 +11,7 @@ For now, frame system visualisation, linear analysis solution and diagrams' (NMV
 
 inputElementCoordinates.txt file defines the geometry of the system. Each row represents start and end coordinates of frame elements (6 numerical values separated by comma corresponding to 2 3D point coordinates)
 
-inputElementForces.txt file defines the imposed distributed forces on elements in global coordinates. Number of rows of this file has to be the same as inputElementCoordinates.txt file's. Each row has 6 numbers separated by comma (distributed forces in X, Y and Z and distributed moments in X,Y and X global directions). Only uniform distributed forces are currently allowed.
+inputElementForces.txt file defines the imposed distributed forces on elements in global coordinates. Number of rows of this file has to be the same as inputElementCoordinates.txt file's. Each row has 6 numbers separated by comma (distributed forces in X, Y and Z and distributed moments in X,Y and Z global directions). Only uniform distributed forces are currently allowed.
 
 inputElementSectionMaterial.txt defines rectangular section height, width, Young's elasticity modulus E and shear modulus G of each element. Number of rows again has to be the same as inputElementCoordinates.txt file's. Each row contains 4 numerical values separated by commas.
 
